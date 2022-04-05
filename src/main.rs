@@ -17,6 +17,8 @@ use crossterm::{
 };
 use std::time::{Instant, Duration};
 
+const API_KEY: &str = /* your API key */;
+
 enum Message {
     Action(Option<String>),
     Song(Song),
@@ -36,9 +38,6 @@ fn main() {
     stdout.execute(terminal::SetSize(w, h)).unwrap();
     stdout.execute(cursor::DisableBlinking).unwrap();
     stdout.execute(cursor::Hide).unwrap();
-
-    //let song = fft("C:\\Users\\zerotwo\\Desktop\\ROCKSTAR.mp3");
-    //song.play();
 
     let (w, h) = (w as usize, h as usize);
     let mut buff = vec![' '; w*h];
@@ -60,19 +59,12 @@ fn main() {
         let millis = start.elapsed().as_millis();
 
         if let Some(act) = &action {
-            //text(w, h, &mut buff, act, 0, h-2);
             text(w, h, &mut buff, format!("{}", R_ANIM[(millis/200) as usize % R_ANIM.len()]).as_str(), 0, h-2);
         }
 
-        //text(w, h, &mut buff, "\u{25DC}", 0, h-2);
-
         let mut flen = 1;
         if let Some(song) = &mut song {
-            //if inp.is_empty() {
             text(w, h, &mut buff, &song.title, w/2 - song.title.len()/2 + 1, h-1);
-            //}
-
-            // center: w/2 - 1 & w/2
 
             a_bar += ((millis as f32 * 48.0 / song.len as f32) - a_bar) * 0.01;
             text(w, h, &mut buff, "[", w/2 - 1 - 24, h-3);
@@ -87,7 +79,6 @@ fn main() {
                     let fk = ((k+1) as f32 / 4.0) - (k/4) as f32;
                     values[k] = 
                     (
-                        //frag[2+k/3 - 2] +
                         0.1 * frag[1+k/4 - 1] +
                         (1.0 - fk) * frag[1+k/4] +
                         fk * frag[1+k/4 + 1] +
@@ -128,9 +119,6 @@ fn main() {
         a_min += (min - a_min) * 0.001;
 
         for k in 0..w {
-            // for q in 0..(a_values[k] - min) as usize {
-            //     buff[(h-5-q) * w + k] = '|';
-            // }
             buff[(h-5-(a_values[k] - a_min) as usize) * w + k] = '•';
 
             for k in 0..w {
@@ -293,8 +281,7 @@ fn text(w: usize, h: usize, buff: &mut Vec<char>, s: &str, x: usize, y: usize) {
     }
 }
 
-const API_KEY: &str = "AIzaSyD27XzkAIxC7W3FQ5Y6E2okjBYr--m7qd4";
-//const API_KEY: &str = "AIzaSyBO1jhRNMjGoGUDWypVoVDiNavITIgHq5k";
+
 fn search(query: &str) -> Option<Vec<(String,String)>> {
     futures::executor::block_on(async {
         let key = ApiKey::new(API_KEY);
