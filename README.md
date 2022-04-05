@@ -24,6 +24,7 @@ const API_KEY: &str = /* your API key */;
 ## Todo
 This app is still missing some features like:
 * streaming and visualizing in real-time
+* spinless render/event loop implementation for lower CPU usage
 * support for resizing console window during runtime
 * alternative way of visualizing
 * more quality of life commands
