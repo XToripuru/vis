@@ -1,6 +1,8 @@
 # Vis
 Console audio visualizer with Youtube API
 
+You can see it in action in my [video](https://www.youtube.com/watch?v=gg5kk1sIKPg)
+
 ## What does it do?
 You can input video title and it will download it from Youtube and then play it with cool visuals
 
