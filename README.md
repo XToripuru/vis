@@ -9,6 +9,11 @@ You will need to modify this line:
 const API_KEY: &str = /* your API key */;
 ```
 
+## Commands
+* `p` followed by title clears the queue and plays that title
+* `q` followed by title adds that title to queue
+* `s` skip current song in queue
+
 ## Prerequisites
 * Your own [Youtube API](https://developers.google.com/youtube/v3/getting-started) key
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp) for downloading youtube videos
