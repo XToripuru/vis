@@ -55,9 +55,11 @@ fn main() {
             });
         }
 
-        if let Some(ref mut player) = player {
-            let elapsed = player.start.elapsed().as_millis() as usize;
-            let frame = &player.spectrum.inner[player.spectrum.size * (elapsed as f32 / (1000.0 / player.spectrum.fps as f32)) as usize..][..player.spectrum.size];
+        if let Some(ref mut p) = player {
+            let elapsed = p.start.elapsed().as_millis() as usize;
+            let ptr = p.spectrum.size * (elapsed as f32 / (1000.0 / p.spectrum.fps as f32)) as usize;
+            let size = p.spectrum.size;
+            let frame = &p.spectrum.inner[ptr..][..size];
 
             for q in 0..w {
                 let mut value = 0.0;
@@ -81,6 +83,10 @@ fn main() {
             for x in 0..w {
                 let y = h - 1 - (smooth[x]).clamp(0.0, (h - 2) as f32) as usize;
                 buff[x + y * w] = '•';
+            }
+            
+            if ptr + size == p.spectrum.inner.len() {
+                player = None;
             }
         }
 
