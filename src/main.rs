@@ -34,7 +34,7 @@ fn main() {
     let mut input = String::new();
     let mut task = None::<JoinHandle<Spectrum>>;
     
-    let mut smooth = vec![0.0; w];
+    let mut smooth = vec![0.0; 1024];
 
     loop {
 
@@ -61,9 +61,10 @@ fn main() {
             let size = p.spectrum.size;
             let frame = &p.spectrum.inner[ptr..][..size];
 
-            for q in 0..w {
+            for q in 0..size {
                 let mut value = 0.0;
-                for k in (0..(frame.len() / w)).map(|m| q + m * w) {
+                //for k in (0..(frame.len() / w)).map(|m| q + m * w) {
+                    let k = q;
                     let p = k as f32 * 0.25;
                     let r = 4.0;
                     let range =
@@ -76,19 +77,26 @@ fn main() {
                         value += (h as f32 / 16.0) * (1.0 + q as f32 / 8.0) * frame[q] / (1.0 + d * d);
                     }
 
-                }
+                //}
                 smooth[q] += (value.sqrt() - smooth[q]) * 0.2;
-            }
-
-            for x in 0..w {
-                let y = h - 1 - (smooth[x]).clamp(0.0, (h - 2) as f32) as usize;
-                buff[x + y * w] = '•';
             }
             
             if ptr + size == p.spectrum.inner.len() {
                 player = None;
             }
         }
+
+        let min = smooth.iter().copied().fold(f32::MAX, |min, v| if v < min { v } else { min });
+
+        for x in 0..w/2 {
+            let y = h - 2 - (smooth[x] - min).clamp(0.0, (h - 2) as f32) as usize;
+            buff[x + y * w] = '•';
+            buff[(w - 1 - x) + y * w] = '•';
+
+            let y = 0 + (smooth[w/2 + x] - min).clamp(0.0, (h - 2) as f32) as usize;
+            buff[x + y * w] = '•';
+            buff[(w - 1 - x) + y * w] = '•';
+        }     
 
         for (k, ch) in input.chars().chain(['_']).enumerate() {
             buff[k + (h - 1) * w] = ch;
@@ -118,7 +126,7 @@ fn main() {
                             let _ = input.pop();
                         }
                         KeyCode::Enter if input.len() > 0 && task.is_none() => {
-                            let query = input.replace(" ", "_");
+                            let query = input.replace(" ", "-");
                             input.clear();
                             task = Some(std::thread::spawn(move || {
                                 //println!("Searching");

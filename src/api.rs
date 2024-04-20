@@ -32,9 +32,9 @@ pub fn search(query: impl AsRef<str>) -> Result<(), Box<dyn Error>> {
 
 pub fn fft(path: impl AsRef<Path>) -> Result<Spectrum, Box<dyn Error>> {
 
-    let src = File::open(path)?;
+    let src = File::open(path).unwrap();
 
-    let source = Decoder::new_mp3(BufReader::new(src))?;
+    let source = Decoder::new_mp3(BufReader::new(src)).unwrap();
 
     let samples: SamplesConverter<Decoder<BufReader<File>>, f32> = source.convert_samples();
 
